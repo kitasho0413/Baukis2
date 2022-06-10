@@ -1,5 +1,14 @@
 class StaffMember < ApplicationRecord
+  include StringNomalizer
+
   has_many :events, class_name: "StaffEvent", dependent: :destroy
+
+  before validation do
+    self.family_name = nomalize_as_name(family_name)
+    self.given_name = nomalize_as_name(given_name)
+    self.family_name_kana = nomalize_as_furigana(family_name_kana)
+    self.given_name_kana = nomalize_as_furigana(given_name_kana)
+  end
 
   KATAKANA_REGEXP = /\A[\p{katakana}\u{30fc}]+\z/
 
