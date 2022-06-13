@@ -4,6 +4,7 @@ class StaffMember < ApplicationRecord
   has_many :events, class_name: "StaffEvent", dependent: :destroy
 
   before_validation do
+    self.email = normalize_as_email(email)
     self.family_name = normalize_as_name(family_name)
     self.given_name = normalize_as_name(given_name)
     self.family_name_kana = normalize_as_furigana(family_name_kana)
@@ -25,7 +26,7 @@ class StaffMember < ApplicationRecord
     before: -> (obj) { 1.year.from_now.to_date },
     allow_blank: true
   }
-  
+
   def password=(raw_password)
     if raw_password.kind_of?(String)
       self.hashed_password = BCrypt::Password.create(raw_password)
